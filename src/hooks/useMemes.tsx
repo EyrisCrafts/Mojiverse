@@ -44,7 +44,9 @@ interface SettingsStoreProps {
 
     // Settings
     maxResultsAtOnce: number;
+    setMaxResultsAtOnce: (maxResults: number) => void;
     crossAxisCount: number;
+    setCrossAxisCount: (crossAxisCount: number) => void;
 
 }
 
@@ -84,8 +86,10 @@ export const useMemeStore = create<SettingsStoreProps>()(
             setCurrentSelectedGif: (item: ModelEmoji) => set({ currentSelectedGif: item }),
 
             // Settings 
-            maxResultsAtOnce: 4,
+            maxResultsAtOnce: 20,
+            setMaxResultsAtOnce: (maxResults: number) => set({ maxResultsAtOnce: maxResults }),
             crossAxisCount: 4,
+            setCrossAxisCount: (crossAxisCount: number) => set({ crossAxisCount: crossAxisCount }),
 
             // Search term
             currentSearchTerm: '',
@@ -123,7 +127,7 @@ export const useMemeStore = create<SettingsStoreProps>()(
                 if (searchType === EnumSearchType.ascii) {
                     const items = useMemeStore.getState().allAsciis;
                     const filteredItems = items.filter((item) => item.shortcut.includes(searchTermToUse));
-                    const asciiEmojis = filteredItems.map((item) => new ModelEmoji(item.phrase, item.shortcut, EnumSearchType.ascii, ''));
+                    const asciiEmojis = filteredItems.map((item) => new ModelEmoji(item.phrase, item.shortcut, EnumSearchType.ascii, '')).slice(0, useMemeStore.getState().maxResultsAtOnce);
 
                     set({ currentSearchItems: asciiEmojis });
                     // Select the first item
@@ -139,7 +143,7 @@ export const useMemeStore = create<SettingsStoreProps>()(
                     }
                     const results = emojis.map((emoji: { name: string, skins: { native: any; }[]; }) => {
                         return new ModelEmoji(emoji.skins[0].native, emoji.name, EnumSearchType.emojis, "");
-                    })
+                    }).slice(0, useMemeStore.getState().maxResultsAtOnce);
                     set({ currentSearchItems: results });
                     // set the first item
                     if (results.length > 0) {
@@ -161,6 +165,11 @@ export const useMemeStore = create<SettingsStoreProps>()(
             getStorage: () => sessionStorage, // or localStorage
             // Custom serialize/deserialize handling for ModelEmoji instances
             serialize: JSON.stringify,
+            onRehydrateStorage: (state: any) => {
+                // console log the rehydrated state
+                console.log('Rehydrated state:', state);
+                return state;
+            },
             deserialize: (str: string) => {
                 try {
                     const json = JSON.parse(str);

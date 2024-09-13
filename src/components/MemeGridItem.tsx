@@ -28,8 +28,6 @@ const GridItem: React.FC<GridItemProps> = ({ item, index }: GridItemProps) => {
             });
         }
     }, [isSelectedItem]);
-    console.log("Is selected item: "+ isSelectedItem.toString() + " index: " + index.toString() + " currentSelectedGifIndex: " + currentSelectedGifIndex.toString());
-    // const isSelectedItem: boolean = currentSelectedGif !== null && currentSelectedGif instanceof  ModelEmoji && (item.customToString() === currentSelectedGif.customToString());
 
     const onClick = () => {
         if (currentSelectedGifIndex >= 0 && currentSelectedGifIndex < currentSearchItems.length) {

@@ -3,17 +3,22 @@ import { EnumSearchType } from "@/enums";
 import { useMemeStore } from "@/hooks/useMemes";
 import Image from 'next/image';
 import GridItem from "./MemeGridItem";
+import { useEffect, useState } from "react";
 
 const MemeGrid: React.FC = () => {
     const [currentSearchItems, crossAxisCount] = useMemeStore((state) => [
         state.currentSearchItems,
         state.crossAxisCount
     ]);
-    console.log("length of search items: " + currentSearchItems.length.toString())
+    const [_, forceUpdate] = useState(0);
+
+    useEffect(() => {
+        forceUpdate(n => n + 1);  // increment state to force re-render
+    }, [crossAxisCount]);
+
     return (
-        <div className={`grid grid-cols-4 gap-4 justify-center`}>
+        <div key={`grid-${crossAxisCount}`} style={{ display: 'grid', gridTemplateColumns: `repeat(${crossAxisCount}, minmax(0, 1fr))`, gap: '16px', justifyContent: 'center' }}>
             {currentSearchItems.map((item: ModelEmoji, index: number) => (
-                // GridItem(item)
                 <GridItem key={`${item.shortName} - ${item.emoji} - ${item.searchType} - ${item.memeUrl}`} item={new ModelEmoji(item.emoji, item.shortName, item.searchType, item.memeUrl)} index={index} />
             ))}
         </div>
