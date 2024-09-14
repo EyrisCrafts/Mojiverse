@@ -64,6 +64,11 @@ const debouncedGifSearch = debounce(async (searchTerm: string, set: any, maxResu
             searchType: EnumSearchType.gif
         }));
         const converted = newResults.map((item) => new ModelEmoji('', '', item.searchType, item.memeUrl));
+        // If selected category is still GIF, set the current search items
+        if (useMemeStore.getState().selectedMenu !== EnumSearchType.gif && useMemeStore.getState().selectedMenu !== EnumSearchType.image) {
+            return;
+        }
+        
         set({ currentSearchItems: converted });
         // Select the first item
         if (converted.length > 0) {
