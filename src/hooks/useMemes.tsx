@@ -97,7 +97,7 @@ export const useMemeStore = create<SettingsStoreProps>()(
 
             // Menu Items
             setSelectedMenu: (menu: EnumSearchType) => set({ selectedMenu: menu }),
-            selectedMenu: EnumSearchType.emojis,
+            selectedMenu: EnumSearchType.ascii,
 
             // Ascii memes
             allAsciis: [],
